@@ -91,3 +91,6 @@ CREATE TABLE Logs (
    CONSTRAINT fk_logs_staff_name FOREIGN KEY (Name_staff) REFERENCES Staff(Name_staff),
    CONSTRAINT fk_logs_label_id FOREIGN KEY (Label_id) REFERENCES Labels(Label_id)
 );
+
+
+-- End
