@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Label Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #D3D3D3;
+            padding: 20px;
+        }
+        .header img {
+            height: 70px;
+        }
+        .header h1 {
+            font-size: 36px;
+            color: #003366;
+            margin: 0;
+        }
+        .header .signout {
+            background-color: #00796B;
+            color: white;
+            border-radius: 50%;
+            padding: 15px 20px;
+            font-size: 16px;
+            text-decoration: none;
+        }
+        .header .signout:hover {
+            background-color: #005F56;
+        }
+
+        /* Form Container */
+        .form-container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-container label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #003366;
+        }
+        .form-container input[type="text"],
+        .form-container select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .form-container input[type="radio"] {
+            margin-right: 10px;
+        }
+        .form-container button {
+            background-color: #00796B;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .form-container button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .form-container button:hover:enabled {
+            background-color: #005F56;
+        }
+        
+        .form-container .button-row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+
+
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <div class="header">
+        <img src="Icon.png" alt="NSW Government Logo">
+        <h1>LABEL</h1>
+        <a href="Login_page.html" class="signout">Sign out</a>
+    </div>
+
+    <!-- Form Section -->
+    <div class="form-container">
+        <form id="label-form">
+            <!-- Input fields for Patient ID -->
+            <label for="patient-ID">Enter Patient ID:</label>
+            <input type="text" id="patient-ID" name="patient-ID" placeholder="Enter Patient ID" required>
+
+            <!-- Input fields for Employee ID -->
+            <label for="employee-ID">Enter Employee ID:</label>
+            <input type="text" id="employee-ID" name="employee-ID" placeholder="Enter Employee ID" required>
+
+            <!-- Ward Selection -->
+            <label for="Ward">Choose The Ward:</label>
+            <select id="Ward" name="Ward" required>
+                <option value="" selected disabled>Choose Ward No#:</option>
+                <option value="A">Ward No#: A</option>
+                <option value="B">Ward No#: B</option>
+                <option value="C">Ward No#: C</option>
+                <option value="D">Ward No#: D</option>
+            </select>
+
+            <!-- Lab Selection -->
+            <label for="Lab">Choose The Lab:</label>
+            <select id="Lab" name="Lab" required>
+                <option value="" selected disabled>Choose Lab No#:</option>
+                <option value="01">Lab No#: 01</option>
+                <option value="02">Lab No#: 02</option>
+                <option value="03">Lab No#: 03</option>
+                <option value="04">Lab No#: 04</option>
+            </select>
+
+            <!-- Radio Buttons for Test Types -->
+
+            <label for="test-type">Choose Test Type:</label>
+            <input type="radio" name="test-choice" value="CMB" required> CMB
+            <input type="radio" name="test-choice" value="CBC"> CBC
+            <input type="radio" name="test-choice" value="WBS"> WBS
+
+
+            <!-- Buttons (Initially disabled) -->
+            <div class="button-row">
+                <button type="button" id="printLabel" disabled>PRINT LABEL</button>
+                <button type="button" id="viewLog" disabled>VIEW LOG</button>
+                <button type="button" id="generateReport" disabled>GENERATE REPORT</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- JavaScript to handle form validation and button enable/disable -->
+    <div class="button-row">
+        <button type="button" id="printLabel" disabled>PRINT LABEL</button>
+        <button type="button" id="viewLog" disabled>VIEW LOG</button>
+        <button type="button" id="generateReport" disabled>GENERATE REPORT</button>
+    </div>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const patientID = document.getElementById('patient-ID');
+    const employeeID = document.getElementById('employee-ID');
+    const ward = document.getElementById('Ward');
+    const lab = document.getElementById('Lab');
+    const radios = document.querySelectorAll('input[name="test-choice"]');
+    const printLabelButton = document.getElementById('printLabel');
+    const viewLogButton = document.getElementById('viewLog');
+    const generateReportButton = document.getElementById('generateReport');
+    const buttons = [printLabelButton, viewLogButton, generateReportButton];
+
+    // Check form completion for all inputs
+    function checkFormCompletion() {
+        const isPatientIDFilled = patientID.value.trim() !== '';
+        const isEmployeeIDFilled = employeeID.value.trim() !== '';
+        const isWardSelected = ward.value !== '';
+        const isLabSelected = lab.value !== '';
+        const isRadioSelected = Array.from(radios).some(radio => radio.checked);
+
+        if (isPatientIDFilled && isEmployeeIDFilled && isWardSelected && isLabSelected && isRadioSelected) {
+            validateIDs();  // Validate the input fields
+        } else {
+            buttons.forEach(button => button.disabled = true);  // Disable buttons if form is incomplete
+        }
+    }
+
+    // Validate patient and staff IDs via AJAX
+    function validateIDs() {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'Validate_IDs.php', true);
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            if (xhr.status === 200 && xhr.responseText === 'valid') {
+                buttons.forEach(button => button.disabled = false);  // Enable buttons if validation is successful
+            } else {
+                buttons.forEach(button => button.disabled = true);  // Disable buttons if validation fails
+            }
+        };
+        const params = `patient_id=${encodeURIComponent(patientID.value)}&staff_id=${encodeURIComponent(employeeID.value)}`;
+        xhr.send(params);
+    }
+
+    // Attach event listeners to inputs and dropdowns
+    patientID.addEventListener('input', checkFormCompletion);
+    employeeID.addEventListener('input', checkFormCompletion);
+    ward.addEventListener('change', checkFormCompletion);
+    lab.addEventListener('change', checkFormCompletion);
+    radios.forEach(radio => radio.addEventListener('change', checkFormCompletion));
+
+    // View Log button navigates to Log_view.html
+    viewLogButton.addEventListener('click', function() {
+        window.location.href = 'Log_view.html';  // Redirect to Log_view.html
+    });
+
+    // Print Label button logs data and navigates to Print_label.html
+    printLabelButton.addEventListener('click', function() {
+        const testType = Array.from(radios).find(radio => radio.checked)?.value || '';
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'Log_label.php', true);
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                alert("Label information successfully logged!");
+
+                // Navigate to Print_label.html after successful logging
+                window.location.href = 'Print_label.html';  // Redirect to Print_label.html
+            } else {
+                alert("Error logging label information.");
+            }
+        };
+        const params = `patient_id=${encodeURIComponent(patientID.value)}&staff_id=${encodeURIComponent(employeeID.value)}&ward=${encodeURIComponent(ward.value)}&lab=${encodeURIComponent(lab.value)}&test_type=${encodeURIComponent(testType)}`;
+        xhr.send(params);
+    });
+
+    // Generate Report button navigates to Report_page.html
+    generateReportButton.addEventListener('click', function() {
+        // Navigate to Report_page.html when the button is clicked
+        window.location.href = 'Report_page.html';  // Redirect to Report_page.html
+    });
+});
+    </script>
+    
+    
+</body>
+</html>
+
