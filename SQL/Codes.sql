@@ -10,6 +10,20 @@ DROP TABLE PatientSystem.Patient;
 DROP TABLE PatientSystem.Staff;
 DROP TABLE PatientSystem.Logs_info;
 
+
+
+-- Safe Mode
+-- On
+SET SQL_SAFE_UPDATES = 0;
+DELETE FROM PatientSystem.Logs_info;
+DELETE FROM PatientSystem.Staff;
+-- Off
+SET SQL_SAFE_UPDATES = 1;
+
+
+
+
+
 -- Create tables
 CREATE TABLE PatientSystem.Laboratory (
    Lab_id VARCHAR(5) PRIMARY KEY,
@@ -62,12 +76,13 @@ CREATE TABLE PatientSystem.Staff (
    Id_staff VARCHAR(20) PRIMARY KEY,
    Name_staff VARCHAR(20) NOT NULL,
    Phone_number VARCHAR(15) NOT NULL,
+   Email VARCHAR(200) NOT NULL,
    Role VARCHAR(100) NOT NULL
 );
 
 
 CREATE TABLE PatientSystem.Logs_info (
-   Label_id VARCHAR(5),
+   Label_id VARCHAR(5) PRIMARY KEY,
    Id_staff VARCHAR(20),
    Patient_id VARCHAR(5),
    Patient_name VARCHAR(20),
@@ -75,8 +90,6 @@ CREATE TABLE PatientSystem.Logs_info (
    Patient_gender VARCHAR(10),
    Test_type VARCHAR(5),
    Ward_id VARCHAR(5),
-   Action_made VARCHAR(100),
-   CONSTRAINT fk_logs_label_id FOREIGN KEY (Label_id) REFERENCES Labels(Label_id),
    CONSTRAINT fk_logs_staff_id FOREIGN KEY (Id_staff) REFERENCES Staff(Id_staff),
    CONSTRAINT fk_logs_patient_id FOREIGN KEY (Patient_id) REFERENCES PatientSystem.Patient(Patient_id),
    CONSTRAINT fk_logs_patient_name FOREIGN KEY (Patient_name) REFERENCES Patient(Patient_name),
@@ -90,10 +103,14 @@ CREATE TABLE PatientSystem.Logs_info (
 CREATE TABLE PatientSystem.Login_info (
    Staff_id VARCHAR(20),
    pass VARCHAR(300),
+   token VARCHAR(300),
    CONSTRAINT fk_login_info_staff_id FOREIGN KEY (Staff_id) REFERENCES Staff(Id_staff)
 );
 
 
+
+   
+   
 
 
 -- Insert data
@@ -112,14 +129,49 @@ VALUES ('T0789', '0123', 'CMB', 'SomeFieldValue');
 INSERT INTO PatientSystem.Labels (Label_id, Test_id, Patient_id, Patient_name, Ward_id, Due_date, Medication)
 VALUES ('*159', 'T0789', '0123', 'Morten Patient', 'A', '2024-09-10', 'Patient needs A drug');
 
-INSERT INTO PatientSystem.Staff (Id_staff, Name_staff, Phone_number, Role)
-VALUES ('S7539', 'Morten Staff', 479987654, 'Nurse');
+INSERT INTO PatientSystem.Staff (Id_staff, Name_staff, Phone_number, Email, Role)
+VALUES ('S7539', 'Morten Staff', 479987654, 'tokenmessage9@gmail.com', 'Nurse');
 
-INSERT INTO PatientSystem.Logs_info (Label_id, Id_staff, Patient_id, Patient_age, Patient_name, Patient_gender, Test_type, Ward_id, Action_made)
-VALUES ('*159', 'S7539', '0123', '25', 'Morten Patient', 'Male', 'CMB', 'A', 'Print. Reprint');
+INSERT INTO PatientSystem.Logs_info (Label_id, Id_staff, Patient_id, Patient_age, Patient_name, Patient_gender, Test_type, Ward_id)
+VALUES ('*159', 'S7539', '0123', '25', 'Morten Patient', 'Male', 'CMB', 'A');
 
 INSERT INTO PatientSystem.Login_info (Staff_id, pass)
 VALUES ('S7539', 'securepassword123');
+
+
+
+
+-- Insert into Laboratory
+INSERT INTO PatientSystem.Laboratory (Lab_id, Product_id)
+VALUES ('L002', 'P9876');
+
+-- Insert into Patient
+INSERT INTO PatientSystem.Patient (Patient_id, Patient_name, Gender, Age, Phone, Address)
+VALUES ('0456', 'John Doe', 'Male', '32', 498765432, '123 Main St');
+
+-- Insert into Ward
+INSERT INTO PatientSystem.Ward (Ward_id, Patient_id, Lab_id)
+VALUES ('B', '0456', 'L002');
+
+-- Insert into Tests
+INSERT INTO PatientSystem.Tests (Test_id, Patient_id, Test_type, The_field)
+VALUES ('T1234', '0456', 'WBC', 'BloodTest');
+
+-- Insert into Labels
+INSERT INTO PatientSystem.Labels (Label_id, Test_id, Patient_id, Patient_name, Ward_id, Due_date, Medication)
+VALUES ('*160', 'T1234', '0456', 'John Doe', 'B', '2024-09-15', 'Needs medication B');
+
+-- Insert into Staff
+INSERT INTO PatientSystem.Staff (Id_staff, Name_staff, Phone_number, Role)
+VALUES ('S8541', 'Jane Smith', 459876123, 'Doctor');
+
+-- Insert into Logs_info
+INSERT INTO PatientSystem.Logs_info (Label_id, Id_staff, Patient_id, Patient_age, Patient_name, Patient_gender, Test_type, Ward_id)
+VALUES ('*160', 'S8541', '0456', '32', 'John Doe', 'Male', 'WBC', 'B');
+
+-- Insert into Login_info
+INSERT INTO PatientSystem.Login_info (Staff_id, pass)
+VALUES ('S8541', 'password456');
 
 
 
