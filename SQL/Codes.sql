@@ -6,9 +6,10 @@ DROP TABLE PatientSystem.Labels;
 DROP TABLE PatientSystem.Tests;
 DROP TABLE PatientSystem.Ward;
 DROP TABLE PatientSystem.Laboratory;
+DROP TABLE PatientSystem.Logs_info;
 DROP TABLE PatientSystem.Patient;
 DROP TABLE PatientSystem.Staff;
-DROP TABLE PatientSystem.Logs_info;
+
 
 
 
@@ -36,7 +37,8 @@ CREATE TABLE PatientSystem.Patient (
    Gender VARCHAR(10) NOT NULL,
    Age VARCHAR(2) NOT NULL,
    Phone VARCHAR(15) NOT NULL,
-   Address VARCHAR(50) NOT NULL
+   Address VARCHAR(50) NOT NULL,
+   Profile_link VARCHAR(9000) NOT NULL
 );
 CREATE INDEX idx_patient_age ON PatientSystem.Patient(Age);
 CREATE INDEX idx_patient_name ON PatientSystem.Patient(Patient_name);
@@ -116,27 +118,20 @@ CREATE TABLE PatientSystem.Login_info (
 -- Insert data
 INSERT INTO PatientSystem.Laboratory (Lab_id, Product_id)
 VALUES ('L001', 'P4567');
-
-INSERT INTO PatientSystem.Patient (Patient_id, Patient_name, Gender, Age, Phone, Address)
-VALUES ('0123', 'Morten Patient', 'Male', '25', 479268987, '19 Elizabeth st');
-
+INSERT INTO PatientSystem.Patient (Patient_id, Patient_name, Gender, Age, Phone, Address, Profile_link)
+VALUES ('0123', 'Morten Patient', 'Male', '25', 479268987, '19 Elizabeth st', 'https://drive.google.com/drive/folders/1UwnmryDpPdspZwvykFYo6neoBySwggk7');
 INSERT INTO PatientSystem.Ward (Ward_id, Patient_id, Lab_id)
 VALUES ('A', '0123', 'L001');
-
 INSERT INTO PatientSystem.Tests (Test_id, Patient_id, Test_type, The_field)
 VALUES ('T0789', '0123', 'CMB', 'SomeFieldValue');
-
 INSERT INTO PatientSystem.Labels (Label_id, Test_id, Patient_id, Patient_name, Ward_id, Due_date, Medication)
 VALUES ('*159', 'T0789', '0123', 'Morten Patient', 'A', '2024-09-10', 'Patient needs A drug');
-
 INSERT INTO PatientSystem.Staff (Id_staff, Name_staff, Phone_number, Email, Role)
-VALUES ('S7539', 'Morten Staff', 479987654, 'tokenmessage9@gmail.com', 'Nurse');
-
+VALUES ('S7539', 'Morten Staff', 479987654, '21384714@students.latrobe.edu.au', 'Nurse');
 INSERT INTO PatientSystem.Logs_info (Label_id, Id_staff, Patient_id, Patient_age, Patient_name, Patient_gender, Test_type, Ward_id)
 VALUES ('*159', 'S7539', '0123', '25', 'Morten Patient', 'Male', 'CMB', 'A');
-
 INSERT INTO PatientSystem.Login_info (Staff_id, pass)
-VALUES ('S7539', 'securepassword123');
+VALUES ('S7539', 'root123');
 
 
 
@@ -144,34 +139,51 @@ VALUES ('S7539', 'securepassword123');
 -- Insert into Laboratory
 INSERT INTO PatientSystem.Laboratory (Lab_id, Product_id)
 VALUES ('L002', 'P9876');
-
 -- Insert into Patient
-INSERT INTO PatientSystem.Patient (Patient_id, Patient_name, Gender, Age, Phone, Address)
-VALUES ('0456', 'John Doe', 'Male', '32', 498765432, '123 Main St');
-
+INSERT INTO PatientSystem.Patient (Patient_id, Patient_name, Gender, Age, Phone, Address, Profile_link)
+VALUES ('0456', 'John Doe', 'Male', '32', 498765432, '123 Main St', 'https://drive.google.com/drive/folders/1DJHiOOHSclJ9w59amz-FQ8XEdwMVL6od');
 -- Insert into Ward
 INSERT INTO PatientSystem.Ward (Ward_id, Patient_id, Lab_id)
 VALUES ('B', '0456', 'L002');
-
 -- Insert into Tests
 INSERT INTO PatientSystem.Tests (Test_id, Patient_id, Test_type, The_field)
 VALUES ('T1234', '0456', 'WBC', 'BloodTest');
-
 -- Insert into Labels
 INSERT INTO PatientSystem.Labels (Label_id, Test_id, Patient_id, Patient_name, Ward_id, Due_date, Medication)
 VALUES ('*160', 'T1234', '0456', 'John Doe', 'B', '2024-09-15', 'Needs medication B');
-
 -- Insert into Staff
-INSERT INTO PatientSystem.Staff (Id_staff, Name_staff, Phone_number, Role)
-VALUES ('S8541', 'Jane Smith', 459876123, 'Doctor');
-
+INSERT INTO PatientSystem.Staff (Id_staff, Name_staff, Phone_number, Email, Role)
+VALUES ('S8541', 'Jane Smith', 459876123, '21384714@students.latrobe.edu.au','Doctor');
 -- Insert into Logs_info
 INSERT INTO PatientSystem.Logs_info (Label_id, Id_staff, Patient_id, Patient_age, Patient_name, Patient_gender, Test_type, Ward_id)
 VALUES ('*160', 'S8541', '0456', '32', 'John Doe', 'Male', 'WBC', 'B');
-
 -- Insert into Login_info
 INSERT INTO PatientSystem.Login_info (Staff_id, pass)
-VALUES ('S8541', 'password456');
+VALUES ('S8541', 'root123');
+
+
+
+-- Insert into Laboratory
+INSERT INTO PatientSystem.Laboratory (Lab_id, Product_id)
+VALUES ('L003', 'P79');
+-- Insert into Patient
+INSERT INTO PatientSystem.Patient (Patient_id, Patient_name, Gender, Age, Phone, Address, Profile_link)
+VALUES ('0789', 'Matt', 'Female', '98', 04798895, '9 King St', 'https://drive.google.com/drive/folders/1_Tx17OlqomPFbtNa8e4pGO7E7o3ed7xS');
+-- Insert into Ward
+INSERT INTO PatientSystem.Ward (Ward_id, Patient_id, Lab_id)
+VALUES ('D', '0789', 'L003');
+-- Insert into Tests
+INSERT INTO PatientSystem.Tests (Test_id, Patient_id, Test_type, The_field)
+VALUES ('T4567', '0789', 'WBC', 'BloodTest');
+-- Insert into Labels
+INSERT INTO PatientSystem.Labels (Label_id, Test_id, Patient_id, Patient_name, Ward_id, Due_date, Medication)
+VALUES ('*179', 'T4567', '0789', 'John Doe', 'B', '2024-09-15', 'Needs medication B');
+-- Insert into Staff
+INSERT INTO PatientSystem.Staff (Id_staff, Name_staff, Phone_number, Email, Role)
+VALUES ('S7410', 'Ali Eliot', 459876123, '21384714@students.latrobe.edu.au','Doctor');
+-- Insert into Logs_info
+INSERT INTO PatientSystem.Logs_info (Label_id, Id_staff, Patient_id, Patient_age, Patient_name, Patient_gender, Test_type, Ward_id)
+VALUES ('*179', 'S7410', '0789', '98', 'Matt', 'Female', 'WBC', 'D');
 
 
 
@@ -184,3 +196,5 @@ SELECT * FROM PatientSystem.Labels;
 SELECT * FROM PatientSystem.Staff;
 SELECT * FROM PatientSystem.Logs_info;
 SELECT * FROM PatientSystem.Login_info;
+
+DESCRIBE PatientSystem.Patient;
